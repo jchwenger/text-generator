@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="A private, in-browser writing companion powered by a small language model.">
+  <meta name="theme-color" content="#f6f2ea">
+  <title>Small Type — local text generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libertinus+Sans:wght@400;600&amp;family=Libertinus+Serif:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="sketch.js"></script>
+</head>
+
+<body>
+  <header class="masthead">
+    <a class="wordmark" href="#editor">small type<span aria-hidden="true">.</span></a>
+    <p>Local writing companion</p>
+  </header>
+
+  <main>
+    <section class="editor-panel" aria-labelledby="page-title">
+      <div class="editor-heading">
+        <div>
+          <p class="eyebrow">Untitled document</p>
+          <h1 id="page-title">Begin anywhere.</h1>
+        </div>
+        <p class="word-count"><span id="word-count">0</span> words</p>
+      </div>
+
+      <label class="visually-hidden" for="editor">Text editor</label>
+      <textarea id="editor" spellcheck="true" autofocus placeholder="Write a line, then press Tab to let the model continue…" aria-describedby="editor-help"></textarea>
+
+      <footer class="editor-footer">
+        <p id="editor-help"><kbd>Tab</kbd> generates at the cursor · <kbd>Esc</kbd> stops</p>
+        <button class="text-button" id="clear-button" type="button">Clear page</button>
+      </footer>
+    </section>
+
+    <aside class="controls" aria-labelledby="controls-title">
+      <div class="control-heading">
+        <div>
+          <p class="eyebrow">The engine</p>
+          <h2 id="controls-title">Generation controls</h2>
+        </div>
+        <span class="status-dot" id="status-dot" aria-hidden="true"></span>
+      </div>
+
+      <form id="settings-form">
+        <div class="field model-field">
+          <label for="model-id">Hugging Face model</label>
+          <input id="model-id" name="model" type="text" value="onnx-community/SmolLM2-135M-ONNX" list="model-suggestions" autocomplete="off" autocapitalize="off" spellcheck="false">
+          <datalist id="model-suggestions">
+            <option value="onnx-community/SmolLM2-135M-ONNX">SmolLM2 135M · lighter mobile fallback</option>
+            <option value="onnx-community/gemma-3-270m-ONNX">Gemma 3 270M · stronger, licence-gated</option>
+          </datalist>
+          <div class="field-note model-links">
+            <a id="model-link" href="https://huggingface.co/onnx-community/SmolLM2-135M-ONNX" target="_blank" rel="noreferrer">View model ↗</a>
+            <a href="https://huggingface.co/models?library=transformers.js&amp;pipeline_tag=text-generation&amp;sort=downloads" target="_blank" rel="noreferrer">Find small compatible models ↗</a>
+          </div>
+        </div>
+
+        <div class="load-row">
+          <button class="primary-button" id="load-button" type="button">Load model</button>
+          <button class="play-button" id="generate-button" type="button" aria-label="Generate text" title="Generate text" disabled><span aria-hidden="true">▶️</span></button>
+        </div>
+
+        <div class="download" id="download" aria-live="polite">
+          <div class="progress-track" id="progress-track" role="progressbar" aria-label="Model download" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <span id="progress-bar"></span>
+          </div>
+          <div class="status-line">
+            <span id="status-text">Not loaded</span>
+            <span id="progress-label">0%</span>
+          </div>
+        </div>
+
+        <div class="rule"></div>
+
+        <div class="field-grid">
+          <div class="field">
+            <label for="temperature">Temperature</label>
+            <input id="temperature" name="temperature" type="number" value="0.8" min="0" max="2" step="0.05" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label for="top-p">Top p</label>
+            <input id="top-p" name="topP" type="number" value="0.9" min="0" max="1" step="0.05" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label for="top-k">Top k</label>
+            <input id="top-k" name="topK" type="number" value="40" min="0" max="500" step="1" inputmode="numeric">
+          </div>
+          <div class="field">
+            <label for="max-tokens">Max new tokens</label>
+            <input id="max-tokens" name="maxTokens" type="number" value="64" min="1" max="512" step="1" inputmode="numeric">
+          </div>
+          <div class="field">
+            <label for="repetition-penalty">Repetition penalty</label>
+            <input id="repetition-penalty" name="repetitionPenalty" type="number" value="1.1" min="1" max="2" step="0.05" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label for="seed">Seed <span>(optional)</span></label>
+            <input id="seed" name="seed" type="number" placeholder="random" min="0" step="1" inputmode="numeric">
+          </div>
+        </div>
+
+        <div class="field full-field">
+          <label for="stop-sequence">Stop sequence <span>(optional)</span></label>
+          <input id="stop-sequence" name="stopSequence" type="text" placeholder="e.g. ### or \n\n" autocomplete="off">
+        </div>
+
+        <div class="field-grid compact-grid">
+          <div class="field">
+            <label for="device">Compute</label>
+            <select id="device" name="device">
+              <option value="auto">Auto</option>
+              <option value="webgpu">WebGPU</option>
+              <option value="wasm">WASM / CPU</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="dtype">Precision</label>
+            <select id="dtype" name="dtype">
+              <option value="q4">4-bit · smallest</option>
+              <option value="q8">8-bit</option>
+              <option value="fp16">16-bit</option>
+              <option value="fp32">32-bit</option>
+            </select>
+          </div>
+        </div>
+      </form>
+
+      <p class="privacy-note"><span aria-hidden="true">◌</span> The model runs on this device. Your writing is never sent to a server.</p>
+      <details>
+        <summary>About this model choice</summary>
+        <p>SmolLM2 135M is public, light, and the safest mobile default. Gemma 3 270M should produce stronger completions, but its larger download and gated licence make it less frictionless. Both suggestions are base models suited to continuing prose.</p>
+      </details>
+    </aside>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
