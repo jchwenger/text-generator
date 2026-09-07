@@ -106,7 +106,13 @@
         </div>
 
         <div class="field full-field">
-          <label for="stop-sequence">Stop sequence <span>(optional)</span></label>
+          <div class="stop-heading">
+            <label for="stop-sequence">Stop sequence <span>(optional)</span></label>
+            <label class="check-label" for="ignore-case">
+              <input id="ignore-case" name="ignoreCase" type="checkbox">
+              Ignore case
+            </label>
+          </div>
           <input id="stop-sequence" name="stopSequence" type="text" placeholder="e.g. ### or \n\n" autocomplete="off">
         </div>
 

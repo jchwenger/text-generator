@@ -42,6 +42,12 @@ function createPipeline(model, device, dtype) {
   return pipeline('text-generation', model, { device, dtype, progress_callback: progressCallback });
 }
 
+function findStopIndex(text, sequence, ignoreCase) {
+  if (!ignoreCase) return text.indexOf(sequence);
+  const escapedSequence = sequence.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.search(new RegExp(escapedSequence, 'iu'));
+}
+
 async function loadModel({ model, device: requestedDevice, dtype }) {
   try {
     stoppingCriteria.interrupt();
@@ -81,9 +87,12 @@ async function generateText({ prompt, settings }) {
     skip_prompt: true,
     skip_special_tokens: true,
     callback_function: (chunk) => {
+      // TextStreamer may flush one more buffered chunk after interruption.
+      if (interruptedByStop) return;
+
       text += chunk;
       if (settings.stopSequence) {
-        const stopAt = text.indexOf(settings.stopSequence);
+        const stopAt = findStopIndex(text, settings.stopSequence, settings.ignoreCase);
         if (stopAt !== -1) {
           text = text.slice(0, stopAt);
           interruptedByStop = true;

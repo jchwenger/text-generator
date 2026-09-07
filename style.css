@@ -137,6 +137,10 @@ input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 2px c
 .rule { margin: 1.25rem 0; border-top: 1px solid var(--box); }
 .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem .75rem; }
 .full-field, .compact-grid { margin-top: .9rem; }
+.stop-heading { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: .35rem; }
+.stop-heading > label { margin-bottom: 0; }
+.stop-heading .check-label { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: start; gap: .35rem; font-weight: 400; letter-spacing: 0; text-transform: none; cursor: pointer; }
+.check-label input { width: .85rem; height: .85rem; margin: 0; accent-color: var(--accent); }
 .privacy-note { display: flex; gap: .5rem; margin: 1.25rem 0 0; padding-top: .9rem; border-top: 1px solid var(--box); color: var(--muted); font-size: .72rem; line-height: 1.45; }
 .privacy-note span { color: var(--success); font-weight: 700; }
 details { margin-top: .7rem; color: var(--muted); font-size: .72rem; line-height: 1.5; }

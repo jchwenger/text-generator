@@ -72,7 +72,10 @@ function restoreState() {
     const settings = JSON.parse(localStorage.getItem(SETTINGS_KEY) || 'null');
     if (settings) {
       for (const [name, value] of Object.entries(settings)) {
-        if (form.elements[name]) form.elements[name].value = value;
+        const control = form.elements[name];
+        if (!control) continue;
+        if (control.type === 'checkbox') control.checked = value === 'on' || value === true;
+        else control.value = value;
       }
     }
   } catch (_) { /* Ignore malformed or inaccessible local storage. */ }
@@ -90,6 +93,7 @@ function generationSettings() {
     max_new_tokens: Number(data.get('maxTokens')),
     repetition_penalty: Number(data.get('repetitionPenalty')),
     stopSequence: String(data.get('stopSequence') || '').replace(/\\n/g, '\n').replace(/\\t/g, '\t'),
+    ignoreCase: data.has('ignoreCase'),
     seed: seed === '' ? null : Number(seed),
   };
 }
