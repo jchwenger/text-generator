@@ -147,7 +147,7 @@ function generate() {
   isGenerating = true;
   editor.readOnly = true;
   lockSettings(true);
-  generateButton.querySelector('span').textContent = '⏹️';
+  generateButton.classList.add('is-stopping');
   generateButton.setAttribute('aria-label', 'Stop generating');
   generateButton.title = 'Stop generating';
   setStatus('Writing…', 'loading');
@@ -158,7 +158,7 @@ function finishGeneration(message = 'Ready') {
   isGenerating = false;
   editor.readOnly = false;
   lockSettings(false);
-  generateButton.querySelector('span').textContent = '▶️';
+  generateButton.classList.remove('is-stopping');
   generateButton.setAttribute('aria-label', 'Generate text');
   generateButton.title = 'Generate text';
   setStatus(message, 'ready');
