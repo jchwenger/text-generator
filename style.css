@@ -178,11 +178,16 @@ kbd {
   font-size: 1.35rem;
   font-weight: 400;
 }
+.control-heading-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: .65rem;
+}
 .status-dot {
   flex: 0 0 auto;
   width: .62rem;
   height: .62rem;
-  margin-top: .2rem;
   border: 1px solid var(--muted);
   border-radius: 50%;
   background: transparent;
@@ -258,6 +263,10 @@ select:focus {
   justify-content: space-between;
   gap: .75rem;
   flex-wrap: wrap;
+}
+.model-format-note {
+  margin: .3rem 0 0;
+  font-style: italic;
 }
 .load-row {
   display: grid;
@@ -348,22 +357,35 @@ select:focus {
 }
 .field-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: .9rem .75rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .75rem .55rem;
 }
-.full-field,
-.compact-grid {
-  margin-top: .9rem;
+.parameter-grid > .field > label {
+  min-height: 1.55rem;
+  align-items: end;
+  line-height: 1.15;
+}
+.final-grid {
+  grid-template-columns: minmax(0, 1.35fr) repeat(2, minmax(0, 1fr));
+  margin-top: .75rem;
+}
+.final-grid > .field:not(.stop-field) > label {
+  min-height: 1.55rem;
+  align-items: end;
 }
 .stop-heading {
   display: flex;
-  align-items: center;
+  align-items: end;
   justify-content: space-between;
-  gap: .75rem;
+  gap: .25rem;
+  min-height: 1.55rem;
   margin-bottom: .35rem;
 }
 .stop-heading > label {
   margin-bottom: 0;
+}
+.stop-heading > label:first-child {
+  white-space: nowrap;
 }
 .stop-heading .check-label {
   display: inline-flex;
@@ -371,14 +393,16 @@ select:focus {
   align-items: center;
   justify-content: start;
   gap: .35rem;
+  font-size: .58rem;
   font-weight: 400;
   letter-spacing: 0;
   text-transform: none;
   cursor: pointer;
 }
 .check-label input {
-  width: .85rem;
-  height: .85rem;
+  width: .72rem;
+  height: .72rem;
+  min-height: 0;
   margin: 0;
   accent-color: var(--accent);
 }
@@ -436,45 +460,64 @@ details p {
   main {
     width: min(100% - 2rem, 680px);
     grid-template-columns: 1fr;
-    gap: 2rem;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 1.25rem;
+    height: 100dvh;
+    padding-bottom: max(.75rem, env(safe-area-inset-bottom));
   }
   .controls {
     position: static;
-    order: -1;
-  }
-  .editor-panel {
-    display: contents;
-  }
-  .editor-heading {
-    order: -2;
+    min-height: 0;
+    max-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scrollbar-gutter: stable;
+    align-self: stretch;
+    -webkit-overflow-scrolling: touch;
   }
   #editor {
-    min-height: 55vh;
+    min-height: 50vh;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
   }
   .editor-footer {
-    margin-bottom: 1rem;
+    justify-content: flex-end;
+    margin-bottom: .5rem;
+  }
+  #editor-help {
+    display: none;
+  }
+  body {
+    height: 100dvh;
+    overflow: hidden;
   }
 }
 
 @media (max-width: 480px) {
   main {
     width: calc(100% - 1.25rem);
-    padding-top: 1.8rem;
+    gap: 1rem;
+    padding-top: 1rem;
   }
   .editor-heading {
     align-items: baseline;
     gap: .5rem;
     flex-wrap: wrap;
+    margin-bottom: 1rem;
   }
   .word-count {
     margin-left: auto;
   }
   .controls {
-    padding: 1.05rem;
+    padding: .8rem;
+  }
+  .control-heading {
+    margin-bottom: .85rem;
   }
   #editor {
-    min-height: 58vh;
-    padding: 1rem;
+    min-height: 48vh;
+    padding: .85rem;
     font-size: 1.13rem;
   }
   .editor-footer {
@@ -484,11 +527,42 @@ details p {
     max-width: 16rem;
   }
   .field-grid {
-    gap: .8rem .55rem;
+    gap: .6rem .35rem;
+  }
+  .final-grid {
+    grid-template-columns: minmax(0, 1.25fr) repeat(2, minmax(0, 1fr));
+    margin-top: .6rem;
+  }
+  .field label {
+    font-size: .62rem;
+    letter-spacing: .02em;
+  }
+  .parameter-grid > .field > label {
+    min-height: 1.45rem;
+  }
+  .parameter-grid .field label span,
+  .stop-heading > label:first-child span {
+    display: none;
+  }
+  .final-grid > .field:not(.stop-field) > label,
+  .stop-heading {
+    min-height: 1.45rem;
+  }
+  .rule {
+    margin: .85rem 0;
+  }
+  .load-row {
+    margin-top: .7rem;
+  }
+  .privacy-note {
+    margin-top: .9rem;
+    padding-top: .7rem;
   }
   input,
   select {
-    min-height: 2.65rem;
+    min-height: 2.5rem;
+    padding-inline: .4rem;
+    font-size: .76rem;
   }
   .primary-button,
   .play-button {

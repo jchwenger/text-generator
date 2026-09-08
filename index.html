@@ -28,14 +28,17 @@
 
       <footer class="editor-footer">
         <p id="editor-help"><kbd>Tab</kbd> generates at the cursor · <kbd>Esc</kbd> stops</p>
-        <button class="text-button" id="clear-button" type="button">Clear page</button>
+        <button class="text-button" id="clear-button" type="button">clear text</button>
       </footer>
     </section>
 
     <aside class="controls" aria-labelledby="controls-title">
       <div class="control-heading">
         <h2 id="controls-title">Generation controls</h2>
-        <span class="status-dot" id="status-dot" aria-hidden="true"></span>
+        <div class="control-heading-actions">
+          <button class="text-button" id="reset-settings-button" type="button">reset settings</button>
+          <span class="status-dot" id="status-dot" aria-hidden="true"></span>
+        </div>
       </div>
 
       <form id="settings-form">
@@ -50,6 +53,7 @@
             <a id="model-link" href="https://huggingface.co/onnx-community/SmolLM2-135M-ONNX" target="_blank" rel="noreferrer">View model ↗</a>
             <a href="https://huggingface.co/models?library=transformers.js&amp;pipeline_tag=text-generation&amp;sort=downloads" target="_blank" rel="noreferrer">Find small compatible models ↗</a>
           </div>
+          <p class="field-note model-format-note">Choose a browser-ready ONNX model; original safetensors repositories will not load.</p>
         </div>
 
         <div class="load-row">
@@ -74,7 +78,7 @@
 
         <div class="rule"></div>
 
-        <div class="field-grid">
+        <div class="field-grid parameter-grid">
           <div class="field">
             <label for="temperature">temperature</label>
             <input id="temperature" name="temperature" type="number" value="0.8" min="0" max="2" step="0.05" inputmode="decimal">
@@ -101,18 +105,17 @@
           </div>
         </div>
 
-        <div class="field full-field">
-          <div class="stop-heading">
-            <label for="stop-sequence">stop sequence <span>(optional)</span></label>
-            <label class="check-label" for="ignore-case">
-              <input id="ignore-case" name="ignoreCase" type="checkbox">
-              ignore case
-            </label>
+        <div class="field-grid final-grid">
+          <div class="field stop-field">
+            <div class="stop-heading">
+              <label for="stop-sequence">stop sequence</label>
+              <label class="check-label" for="ignore-case">
+                <input id="ignore-case" name="ignoreCase" type="checkbox">
+                case
+              </label>
+            </div>
+            <input id="stop-sequence" name="stopSequence" type="text" placeholder="e.g. ### or \n\n" autocomplete="off">
           </div>
-          <input id="stop-sequence" name="stopSequence" type="text" placeholder="e.g. ### or \n\n" autocomplete="off">
-        </div>
-
-        <div class="field-grid compact-grid">
           <div class="field">
             <label for="device">compute</label>
             <select id="device" name="device">
@@ -124,7 +127,7 @@
           <div class="field">
             <label for="dtype">precision</label>
             <select id="dtype" name="dtype">
-              <option value="q4">4-bit · smallest</option>
+              <option value="q4">4-bit</option>
               <option value="q8">8-bit</option>
               <option value="fp16">16-bit</option>
               <option value="fp32">32-bit</option>

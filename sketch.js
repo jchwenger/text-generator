@@ -5,6 +5,7 @@ const modelLink = document.querySelector('#model-link');
 const loadButton = document.querySelector('#load-button');
 const generateButton = document.querySelector('#generate-button');
 const clearButton = document.querySelector('#clear-button');
+const resetSettingsButton = document.querySelector('#reset-settings-button');
 const statusText = document.querySelector('#status-text');
 const statusDot = document.querySelector('#status-dot');
 const progressTrack = document.querySelector('#progress-track');
@@ -101,6 +102,7 @@ function generationSettings() {
 function lockSettings(locked) {
   form.querySelectorAll('input, select').forEach((control) => { control.disabled = locked; });
   loadButton.disabled = locked;
+  resetSettingsButton.disabled = locked;
 }
 
 function loadModel() {
@@ -115,6 +117,7 @@ function loadModel() {
   isLoading = true;
   loadedSignature = '';
   loadButton.disabled = true;
+  resetSettingsButton.disabled = true;
   generateButton.disabled = true;
   setProgress(0);
   setStatus('Starting download…', 'loading');
@@ -183,6 +186,7 @@ worker.addEventListener('message', ({ data }) => {
     isLoading = false;
     loadedSignature = [data.model, data.requestedDevice, data.dtype].join('|');
     loadButton.disabled = false;
+    resetSettingsButton.disabled = false;
     loadButton.textContent = 'Reload model';
     generateButton.disabled = false;
     setProgress(100);
@@ -210,6 +214,7 @@ worker.addEventListener('message', ({ data }) => {
     const wasGenerating = isGenerating;
     isLoading = false;
     loadButton.disabled = false;
+    resetSettingsButton.disabled = false;
     if (wasGenerating) finishGeneration('Ready');
     else {
       generateButton.disabled = loadedSignature !== modelSignature();
@@ -223,6 +228,7 @@ worker.addEventListener('message', ({ data }) => {
 worker.addEventListener('error', (event) => {
   isLoading = false;
   loadButton.disabled = false;
+  resetSettingsButton.disabled = false;
   setStatus('Worker error', 'error');
   showToast('The model worker could not start. Serve this folder over HTTP, not file://.');
   console.error(event);
@@ -260,6 +266,20 @@ clearButton.addEventListener('click', () => {
   saveDocument();
   updateWordCount();
   editor.focus();
+});
+
+resetSettingsButton.addEventListener('click', () => {
+  form.reset();
+  saveSettings();
+  updateModelLink();
+
+  if (loadedSignature) {
+    const requiresReload = loadedSignature !== modelSignature();
+    generateButton.disabled = requiresReload;
+    setStatus(requiresReload ? 'Settings reset · reload model' : 'Ready', requiresReload ? '' : 'ready');
+  }
+
+  showToast('Settings reset to defaults.');
 });
 
 restoreState();
