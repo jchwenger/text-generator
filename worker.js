@@ -7,7 +7,9 @@ import {
 } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0';
 
 env.allowLocalModels = false;
-env.useBrowserCache = true;
+// Some browsers do not expose CacheStorage inside module workers. In that
+// environment, allow direct fetching instead of making model loading fail.
+env.useBrowserCache = typeof caches !== 'undefined';
 
 let generator = null;
 let stoppingCriteria = new InterruptableStoppingCriteria();

@@ -21,6 +21,7 @@ const worker = new Worker('./worker.js', { type: 'module' });
 let loadedSignature = '';
 let isLoading = false;
 let isGenerating = false;
+let stopRequested = false;
 let insertion = null;
 let toastTimer;
 
@@ -131,6 +132,8 @@ function loadModel() {
 
 function generate() {
   if (isGenerating) {
+    if (stopRequested) return;
+    stopRequested = true;
     worker.postMessage({ type: 'interrupt' });
     setStatus('Stopping…', 'loading');
     return;
@@ -148,6 +151,7 @@ function generate() {
   insertion = { before, after: editor.value.slice(end), start, generated: '' };
 
   isGenerating = true;
+  stopRequested = false;
   editor.readOnly = true;
   lockSettings(true);
   generateButton.classList.add('is-stopping');
@@ -159,6 +163,7 @@ function generate() {
 
 function finishGeneration(message = 'Ready') {
   isGenerating = false;
+  stopRequested = false;
   editor.readOnly = false;
   lockSettings(false);
   generateButton.classList.remove('is-stopping');
@@ -196,7 +201,7 @@ worker.addEventListener('message', ({ data }) => {
     return;
   }
 
-  if (data.type === 'token' && insertion) {
+  if (data.type === 'token' && insertion && !stopRequested) {
     insertion.generated = data.text;
     editor.value = insertion.before + data.text + insertion.after;
     const caret = insertion.start + data.text.length;
@@ -240,7 +245,9 @@ editor.addEventListener('keydown', (event) => {
     generate();
   } else if (event.key === 'Escape' && isGenerating) {
     event.preventDefault();
+    stopRequested = true;
     worker.postMessage({ type: 'interrupt' });
+    setStatus('Stopping…', 'loading');
   }
 });
 
