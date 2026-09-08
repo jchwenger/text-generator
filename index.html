@@ -44,11 +44,23 @@
       <form id="settings-form">
         <div class="field model-field">
           <label for="model-id">hugging face model</label>
-          <input id="model-id" name="model" type="text" value="onnx-community/SmolLM2-135M-ONNX" list="model-suggestions" autocomplete="off" autocapitalize="off" spellcheck="false">
-          <datalist id="model-suggestions">
-            <option value="onnx-community/SmolLM2-135M-ONNX">SmolLM2 135M · lighter mobile fallback</option>
-            <option value="onnx-community/gemma-3-270m-ONNX">Gemma 3 270M · stronger, licence-gated</option>
-          </datalist>
+          <div class="model-input-shell" id="model-input-shell">
+            <input id="model-id" name="model" type="text" value="onnx-community/SmolLM2-135M-ONNX" autocomplete="off" autocapitalize="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="model-suggestions">
+            <div class="model-suggestions" id="model-suggestions" role="listbox" aria-label="suggested models" hidden>
+              <button type="button" role="option" data-model="onnx-community/SmolLM2-135M-ONNX">
+                <span>SmolLM2 135M</span>
+                <small>lightest</small>
+              </button>
+              <button type="button" role="option" data-model="onnx-community/gemma-3-270m-ONNX">
+                <span>Gemma 3 270M</span>
+                <small>licence-gated</small>
+              </button>
+              <button type="button" role="option" data-model="onnx-community/Qwen3-0.6B-ONNX">
+                <span>Qwen3 0.6B</span>
+                <small>larger</small>
+              </button>
+            </div>
+          </div>
           <div class="field-note model-links">
             <a id="model-link" href="https://huggingface.co/onnx-community/SmolLM2-135M-ONNX" target="_blank" rel="noreferrer">View model ↗</a>
             <a href="https://huggingface.co/models?library=transformers.js&amp;pipeline_tag=text-generation&amp;sort=downloads" target="_blank" rel="noreferrer">Find small compatible models ↗</a>
@@ -139,7 +151,7 @@
       <p class="privacy-note"><span aria-hidden="true">◌</span> The model runs on this device. Your writing is never sent to a server.</p>
       <details>
         <summary>About this model choice</summary>
-        <p>SmolLM2 135M is public, light, and the safest mobile default. Gemma 3 270M should produce stronger completions, but its larger download and gated licence make it less frictionless. Both suggestions are base models suited to continuing prose.</p>
+        <p>SmolLM2 135M is public, light, and the safest mobile default. Gemma 3 270M should produce stronger completions, but its larger download and gated licence make it less frictionless. Qwen3 0.6B is more capable again, but considerably heavier for mobile use. All three suggestions are base models suited to continuing prose.</p>
       </details>
     </aside>
   </main>

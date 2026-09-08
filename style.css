@@ -252,6 +252,49 @@ select:focus {
 .model-field input {
   font-size: .76rem;
 }
+.model-input-shell {
+  position: relative;
+}
+.model-suggestions {
+  position: absolute;
+  z-index: 4;
+  top: calc(100% + 2px);
+  left: 0;
+  width: 100%;
+  padding: .2rem;
+  border: 1px solid var(--box);
+  border-radius: 2px;
+  background: var(--input);
+}
+.model-suggestions[hidden] {
+  display: none;
+}
+.model-suggestions button {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: .75rem;
+  width: 100%;
+  padding: .45rem .4rem;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--ink);
+  font-family: "Libertinus Sans", Helvetica, Arial, sans-serif;
+  font-size: .76rem;
+  text-align: left;
+  cursor: pointer;
+}
+.model-suggestions button:hover,
+.model-suggestions button:focus-visible {
+  outline: 0;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+.model-suggestions small {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: .65rem;
+}
 .field-note {
   margin-top: .38rem;
   color: var(--muted);

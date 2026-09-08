@@ -1,6 +1,8 @@
 const editor = document.querySelector('#editor');
 const form = document.querySelector('#settings-form');
 const modelInput = document.querySelector('#model-id');
+const modelInputShell = document.querySelector('#model-input-shell');
+const modelSuggestions = document.querySelector('#model-suggestions');
 const modelLink = document.querySelector('#model-link');
 const loadButton = document.querySelector('#load-button');
 const generateButton = document.querySelector('#generate-button');
@@ -32,6 +34,23 @@ function modelSignature() {
 function updateModelLink() {
   const id = modelInput.value.trim();
   modelLink.href = id ? `https://huggingface.co/${encodeURI(id)}` : 'https://huggingface.co/models';
+}
+
+function showModelSuggestions() {
+  modelSuggestions.hidden = false;
+  modelInput.setAttribute('aria-expanded', 'true');
+}
+
+function hideModelSuggestions() {
+  modelSuggestions.hidden = true;
+  modelInput.setAttribute('aria-expanded', 'false');
+}
+
+function chooseModel(model) {
+  modelInput.value = model;
+  modelInput.dispatchEvent(new Event('change', { bubbles: true }));
+  modelInput.focus();
+  hideModelSuggestions();
 }
 
 function setStatus(text, state = '') {
@@ -266,6 +285,41 @@ form.addEventListener('change', () => {
 });
 
 modelInput.addEventListener('input', updateModelLink);
+modelInput.addEventListener('focus', showModelSuggestions);
+modelInput.addEventListener('click', showModelSuggestions);
+modelInput.addEventListener('keydown', (event) => {
+  if (event.key === 'ArrowDown') {
+    event.preventDefault();
+    showModelSuggestions();
+    modelSuggestions.querySelector('button')?.focus();
+  } else if (event.key === 'Escape') {
+    hideModelSuggestions();
+  }
+});
+
+modelSuggestions.addEventListener('click', (event) => {
+  const option = event.target.closest('[data-model]');
+  if (option) chooseModel(option.dataset.model);
+});
+
+modelSuggestions.addEventListener('keydown', (event) => {
+  const options = [...modelSuggestions.querySelectorAll('[data-model]')];
+  const index = options.indexOf(document.activeElement);
+
+  if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+    event.preventDefault();
+    const offset = event.key === 'ArrowDown' ? 1 : -1;
+    options[(index + offset + options.length) % options.length].focus();
+  } else if (event.key === 'Escape') {
+    event.preventDefault();
+    hideModelSuggestions();
+    modelInput.focus();
+  }
+});
+
+modelInputShell.addEventListener('focusout', (event) => {
+  if (!modelInputShell.contains(event.relatedTarget)) hideModelSuggestions();
+});
 loadButton.addEventListener('click', loadModel);
 generateButton.addEventListener('click', generate);
 clearButton.addEventListener('click', () => {
