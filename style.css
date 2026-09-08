@@ -140,15 +140,21 @@ kbd {
   font-size: .68rem;
 }
 .text-button {
-  padding: .25rem 0;
-  border: 0;
-  border-bottom: 1px solid currentColor;
+  padding: .3rem .6rem;
+  border: 1px solid var(--box);
+  border-radius: 3px;
   background: transparent;
   color: var(--muted);
   font-size: .75rem;
 }
 .text-button:hover {
+  border-color: var(--rule);
   color: var(--rule);
+}
+.text-button:focus-visible {
+  border-color: var(--rule);
+  outline: 2px solid color-mix(in srgb, var(--rule) 20%, transparent);
+  outline-offset: 2px;
 }
 
 .controls {
@@ -262,7 +268,7 @@ select:focus {
 .primary-button,
 .play-button {
   min-height: 2.7rem;
-  border: 1px solid var(--rule);
+  border: 1px solid var(--ink);
   border-radius: 3px;
   background: transparent;
   color: var(--ink);
@@ -272,7 +278,7 @@ select:focus {
 }
 .primary-button:hover,
 .play-button:hover {
-  background: color-mix(in srgb, var(--rule) 7%, transparent);
+  border: 1px solid var(--rule);
   color: var(--rule);
 }
 .primary-button:focus-visible,
@@ -325,7 +331,7 @@ select:focus {
   display: block;
   width: 0;
   height: 100%;
-  background: var(--rule);
+  background: var(--ink);
   transition: width .15s ease;
 }
 .status-line {

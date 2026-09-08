@@ -256,12 +256,10 @@ modelInput.addEventListener('input', updateModelLink);
 loadButton.addEventListener('click', loadModel);
 generateButton.addEventListener('click', generate);
 clearButton.addEventListener('click', () => {
-  if (!editor.value || window.confirm('Clear the whole page?')) {
-    editor.value = '';
-    saveDocument();
-    updateWordCount();
-    editor.focus();
-  }
+  editor.value = '';
+  saveDocument();
+  updateWordCount();
+  editor.focus();
 });
 
 restoreState();
