@@ -3,6 +3,7 @@ import {
   pipeline,
   TextStreamer,
   InterruptableStoppingCriteria,
+  random,
 } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0';
 
 env.allowLocalModels = false;
@@ -115,7 +116,10 @@ async function generateText({ prompt, settings }) {
     options.top_p = settings.top_p;
     options.top_k = settings.top_k;
   }
-  if (Number.isInteger(settings.seed)) options.seed = settings.seed;
+
+  // Transformers.js sampling uses this global PRNG; `seed` is not a
+  // GenerationConfig option and would otherwise be ignored by generate().
+  if (Number.isInteger(settings.seed)) random.seed(settings.seed);
 
   try {
     await generator(prompt, options);
