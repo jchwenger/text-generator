@@ -1,4 +1,4 @@
-# Small Type
+# Neural Text Generator
 
 A zero-build, single-page writing companion that runs a small open-weight language model locally in the browser with [Transformers.js](https://huggingface.co/docs/transformers.js).
 
