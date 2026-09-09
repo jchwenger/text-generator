@@ -216,7 +216,6 @@ kbd {
   font-size: .68rem;
   font-weight: 600;
   letter-spacing: .045em;
-  text-transform: lowercase;
 }
 .field label span {
   font-weight: 400;
