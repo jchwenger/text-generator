@@ -87,14 +87,6 @@ h1 {
   font-weight: 400;
   line-height: 1.08;
 }
-.word-count {
-  flex: 0 0 auto;
-  margin: 0 0 .2rem;
-  color: var(--muted);
-  font-size: .76rem;
-  font-style: italic;
-}
-
 #editor {
   display: block;
   width: 100%;
@@ -315,7 +307,7 @@ select:focus {
   display: grid;
   grid-template-columns: 1fr 2.7rem;
   gap: .55rem;
-  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 .primary-button,
 .play-button {
@@ -525,8 +517,7 @@ details p {
     -webkit-overflow-scrolling: touch;
   }
   .editor-footer {
-    justify-content: flex-end;
-    margin-bottom: .5rem;
+    display: none;
   }
   #editor-help {
     display: none;
@@ -549,9 +540,6 @@ details p {
     flex-wrap: wrap;
     margin-bottom: 1rem;
   }
-  .word-count {
-    margin-left: auto;
-  }
   .controls {
     padding: .8rem;
   }
@@ -562,12 +550,6 @@ details p {
     min-height: 48vh;
     padding: .85rem;
     font-size: 1.13rem;
-  }
-  .editor-footer {
-    align-items: start;
-  }
-  .editor-footer p {
-    max-width: 16rem;
   }
   .field-grid {
     gap: .6rem .35rem;
@@ -595,7 +577,7 @@ details p {
     margin: .85rem 0;
   }
   .load-row {
-    margin-top: .7rem;
+    margin-bottom: .7rem;
   }
   .privacy-note {
     margin-top: .9rem;

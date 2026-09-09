@@ -13,7 +13,6 @@ const statusDot = document.querySelector('#status-dot');
 const progressTrack = document.querySelector('#progress-track');
 const progressBar = document.querySelector('#progress-bar');
 const progressLabel = document.querySelector('#progress-label');
-const wordCount = document.querySelector('#word-count');
 const toast = document.querySelector('#toast');
 
 const STORAGE_KEY = 'small-type-document';
@@ -72,11 +71,6 @@ function showToast(message) {
   toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
 }
 
-function updateWordCount() {
-  const words = editor.value.trim().match(/\S+/g);
-  wordCount.textContent = words ? words.length.toLocaleString() : '0';
-}
-
 function saveDocument() {
   try { localStorage.setItem(STORAGE_KEY, editor.value); } catch (_) { /* Storage can be unavailable. */ }
 }
@@ -100,7 +94,6 @@ function restoreState() {
       }
     }
   } catch (_) { /* Ignore malformed or inaccessible local storage. */ }
-  updateWordCount();
   updateModelLink();
 }
 
@@ -190,7 +183,6 @@ function finishGeneration(message = 'Ready') {
   generateButton.title = 'Generate text';
   setStatus(message, 'ready');
   saveDocument();
-  updateWordCount();
   if (insertion) {
     const caret = insertion.start + insertion.generated.length;
     editor.focus();
@@ -215,7 +207,7 @@ worker.addEventListener('message', ({ data }) => {
     generateButton.disabled = false;
     setProgress(100);
     setStatus(`Ready · ${data.device === 'webgpu' ? 'WebGPU' : 'CPU'}`, 'ready');
-    showToast(data.fallback ? 'WebGPU was unavailable, so the model loaded on CPU.' : 'Model ready. Press Tab to continue your text.');
+    showToast(data.fallback ? 'WebGPU was unavailable, so the model loaded on CPU.' : 'Model ready. Press Play/Tab to continue your text.');
     editor.focus();
     return;
   }
@@ -225,7 +217,6 @@ worker.addEventListener('message', ({ data }) => {
     editor.value = insertion.before + data.text + insertion.after;
     const caret = insertion.start + data.text.length;
     editor.setSelectionRange(caret, caret);
-    updateWordCount();
     return;
   }
 
@@ -271,7 +262,6 @@ editor.addEventListener('keydown', (event) => {
 });
 
 editor.addEventListener('input', () => {
-  updateWordCount();
   saveDocument();
 });
 
@@ -325,7 +315,6 @@ generateButton.addEventListener('click', generate);
 clearButton.addEventListener('click', () => {
   editor.value = '';
   saveDocument();
-  updateWordCount();
   editor.focus();
 });
 

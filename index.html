@@ -20,7 +20,7 @@
     <section class="editor-panel" aria-labelledby="page-title">
       <div class="editor-heading">
         <h1 id="page-title">Neural Text Generator</h1>
-        <p class="word-count"><span id="word-count">0</span> words</p>
+        <button class="text-button" id="clear-button" type="button">clear text</button>
       </div>
 
       <label class="visually-hidden" for="editor">text editor</label>
@@ -28,7 +28,6 @@
 
       <footer class="editor-footer">
         <p id="editor-help"><kbd>Tab</kbd> generates at the cursor · <kbd>Esc</kbd> stops</p>
-        <button class="text-button" id="clear-button" type="button">clear text</button>
       </footer>
     </section>
 
@@ -42,6 +41,16 @@
       </div>
 
       <form id="settings-form">
+        <div class="load-row">
+          <button class="primary-button" id="load-button" type="button">Load model</button>
+          <button class="play-button" id="generate-button" type="button" aria-label="Generate text" title="Generate text" disabled>
+            <span class="control-icon" aria-hidden="true">
+              <svg class="play-symbol" viewBox="0 0 24 24" focusable="false"><path d="M8 5.75 18 12 8 18.25Z"></path></svg>
+              <svg class="stop-symbol" viewBox="0 0 24 24" focusable="false"><rect x="6.5" y="6.5" width="11" height="11" rx="1.75"></rect></svg>
+            </span>
+          </button>
+        </div>
+
         <div class="field model-field">
           <label for="model-id">hugging face model</label>
           <div class="model-input-shell" id="model-input-shell">
@@ -66,16 +75,6 @@
             <a href="https://huggingface.co/models?library=transformers.js&amp;pipeline_tag=text-generation&amp;sort=downloads" target="_blank" rel="noreferrer">Find small compatible models ↗</a>
           </div>
           <p class="field-note model-format-note">Choose a browser-ready ONNX model; original safetensors repositories will not load.</p>
-        </div>
-
-        <div class="load-row">
-          <button class="primary-button" id="load-button" type="button">Load model</button>
-          <button class="play-button" id="generate-button" type="button" aria-label="Generate text" title="Generate text" disabled>
-            <span class="control-icon" aria-hidden="true">
-              <svg class="play-symbol" viewBox="0 0 24 24" focusable="false"><path d="M8 5.75 18 12 8 18.25Z"></path></svg>
-              <svg class="stop-symbol" viewBox="0 0 24 24" focusable="false"><rect x="6.5" y="6.5" width="11" height="11" rx="1.75"></rect></svg>
-            </span>
-          </button>
         </div>
 
         <div class="download" id="download" aria-live="polite">
