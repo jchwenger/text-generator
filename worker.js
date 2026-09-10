@@ -86,9 +86,13 @@ async function generateText({ prompt, settings }) {
   stoppingCriteria.reset();
   let text = '';
   let interruptedByStop = false;
+  const generatedTokenIds = [];
   const streamer = new TextStreamer(generator.tokenizer, {
     skip_prompt: true,
     skip_special_tokens: true,
+    token_callback_function: (tokens) => {
+      generatedTokenIds.push(...tokens.map(Number));
+    },
     callback_function: (chunk) => {
       // TextStreamer may flush one more buffered chunk after interruption.
       if (interruptedByStop) return;
@@ -125,7 +129,26 @@ async function generateText({ prompt, settings }) {
 
   try {
     await generator(prompt, options);
-    self.postMessage({ type: 'complete', interrupted: stoppingCriteria.interrupted && !interruptedByStop });
+    const interrupted = stoppingCriteria.interrupted && !interruptedByStop;
+    const stopCriterion = interruptedByStop
+      ? `stop sequence ${JSON.stringify(settings.stopSequence)}${settings.ignoreCase ? ' (case-insensitive)' : ''}`
+      : interrupted
+        ? 'manual interruption'
+        : generatedTokenIds.length >= settings.max_new_tokens
+          ? `maximum new tokens (${settings.max_new_tokens})`
+          : 'end-of-sequence token';
+    const tokens = generator.tokenizer.batch_decode(
+      generatedTokenIds.map((id) => [id]),
+      { skip_special_tokens: false, clean_up_tokenization_spaces: false },
+    );
+
+    self.postMessage({
+      type: 'complete',
+      interrupted,
+      stopCriterion,
+      tokenIds: generatedTokenIds,
+      tokens,
+    });
   } catch (error) {
     self.postMessage({ type: 'error', message: friendlyError(error), error: String(error?.stack || error) });
   }

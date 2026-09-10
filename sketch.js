@@ -221,6 +221,12 @@ worker.addEventListener('message', ({ data }) => {
   }
 
   if (data.type === 'complete') {
+    console.log({
+      tokenCount: data.tokenIds.length,
+      tokens: data.tokens,
+      tokenIds: data.tokenIds,
+      stopCriterion: data.stopCriterion,
+    });
     finishGeneration(data.interrupted ? 'Stopped · ready' : 'Ready');
     return;
   }
