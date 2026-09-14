@@ -170,6 +170,7 @@ function generate() {
   generateButton.setAttribute('aria-label', 'Stop generating');
   generateButton.title = 'Stop generating';
   setStatus('Writing…', 'loading');
+  console.log({ 'prompt': before || '\n' });
   worker.postMessage({ type: 'generate', prompt: before || '\n', settings });
 }
 
