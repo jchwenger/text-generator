@@ -305,8 +305,12 @@ select:focus {
 .load-row {
   display: grid;
   grid-template-columns: 1fr 2.7rem;
-  gap: .55rem;
+  gap: .35rem .55rem;
   margin-bottom: 1rem;
+}
+.select-label {
+  grid-column: 2;
+  justify-self: end;
 }
 .primary-button,
 .play-button {
@@ -356,8 +360,21 @@ select:focus {
   stroke-linejoin: round;
 }
 .stop-symbol,
+.regen-symbol,
 .play-button.is-stopping .play-symbol {
   display: none;
+}
+.regen-symbol {
+  grid-area: 1 / 1;
+  font-size: 1.35rem;
+  font-weight: 400;
+  line-height: 1;
+}
+.play-button.is-regenerating:not(.is-stopping) .play-symbol {
+  display: none;
+}
+.play-button.is-regenerating:not(.is-stopping) .regen-symbol {
+  display: block;
 }
 .play-button.is-stopping .stop-symbol {
   display: block;
@@ -421,12 +438,15 @@ select:focus {
 .stop-heading > label:first-child {
   white-space: nowrap;
 }
-.stop-heading .check-label {
+.stop-heading .check-label,
+.select-label {
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
   justify-content: start;
   gap: .35rem;
+  color: var(--muted);
+  font-family: "Libertinus Sans", Helvetica, Arial, sans-serif;
   font-size: .58rem;
   font-weight: 400;
   letter-spacing: 0;

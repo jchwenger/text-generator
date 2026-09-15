@@ -46,9 +46,14 @@
           <button class="play-button" id="generate-button" type="button" aria-label="Generate text" title="Generate text" disabled>
             <span class="control-icon" aria-hidden="true">
               <svg class="play-symbol" viewBox="0 0 24 24" focusable="false"><path d="M8 5.75 18 12 8 18.25Z"></path></svg>
+              <span class="regen-symbol">&#10227;</span>
               <svg class="stop-symbol" viewBox="0 0 24 24" focusable="false"><rect x="6.5" y="6.5" width="11" height="11" rx="1.75"></rect></svg>
             </span>
           </button>
+          <label class="check-label select-label" for="select-generated">
+            re-gen
+            <input id="select-generated" name="selectGenerated" type="checkbox">
+          </label>
         </div>
 
         <div class="field model-field">

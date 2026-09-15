@@ -6,6 +6,7 @@ const modelSuggestions = document.querySelector('#model-suggestions');
 const modelLink = document.querySelector('#model-link');
 const loadButton = document.querySelector('#load-button');
 const generateButton = document.querySelector('#generate-button');
+const selectGenerated = document.querySelector('#select-generated');
 const clearButton = document.querySelector('#clear-button');
 const resetSettingsButton = document.querySelector('#reset-settings-button');
 const statusText = document.querySelector('#status-text');
@@ -69,6 +70,15 @@ function showToast(message) {
   toast.textContent = message;
   toast.classList.add('show');
   toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
+}
+
+function updateGenerateIcon() {
+  generateButton.classList.toggle('is-regenerating', selectGenerated.checked);
+  if (!isGenerating) {
+    const label = selectGenerated.checked ? 'Regenerate text' : 'Generate text';
+    generateButton.setAttribute('aria-label', label);
+    generateButton.title = label;
+  }
 }
 
 function saveDocument() {
@@ -156,8 +166,9 @@ function generate() {
     return;
   }
 
-  const start = editor.selectionStart ?? editor.value.length;
-  const end = editor.selectionEnd ?? start;
+  let start = editor.selectionStart ?? editor.value.length;
+  let end = editor.selectionEnd ?? start;
+  if (!selectGenerated.checked) start = end;
   const before = editor.value.slice(0, start);
   const settings = generationSettings();
   insertion = { before, after: editor.value.slice(end), start, generated: '' };
@@ -180,14 +191,13 @@ function finishGeneration(message = 'Ready') {
   editor.readOnly = false;
   lockSettings(false);
   generateButton.classList.remove('is-stopping');
-  generateButton.setAttribute('aria-label', 'Generate text');
-  generateButton.title = 'Generate text';
+  updateGenerateIcon();
   setStatus(message, 'ready');
   saveDocument();
   if (insertion) {
     const caret = insertion.start + insertion.generated.length;
     editor.focus();
-    editor.setSelectionRange(caret, caret);
+    editor.setSelectionRange(form.elements.selectGenerated.checked ? insertion.start : caret, caret);
   }
   insertion = null;
 }
@@ -274,6 +284,7 @@ editor.addEventListener('input', () => {
 
 form.addEventListener('change', () => {
   saveSettings();
+  updateGenerateIcon();
   updateModelLink();
   if (loadedSignature && loadedSignature !== modelSignature()) {
     generateButton.disabled = true;
@@ -328,6 +339,7 @@ clearButton.addEventListener('click', () => {
 resetSettingsButton.addEventListener('click', () => {
   form.reset();
   saveSettings();
+  updateGenerateIcon();
   updateModelLink();
 
   if (loadedSignature) {
@@ -340,3 +352,4 @@ resetSettingsButton.addEventListener('click', () => {
 });
 
 restoreState();
+updateGenerateIcon();
